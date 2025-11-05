@@ -1,0 +1,99 @@
+/* frontend/src/components/StepIndicator.module.css */
+.stepNav {
+  margin-bottom: 3rem; /* mb-12 */
+  overflow-x: auto; /* Allow horizontal scroll on small screens */
+  padding-bottom: 0.5rem; /* Space for scrollbar */
+}
+
+.stepList {
+  display: flex;
+  align-items: flex-start; /* Align circles at the top */
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  min-width: 600px; /* Prevent excessive squishing */
+}
+
+.stepItem {
+  display: flex;
+  align-items: flex-start; /* Align circle and connector */
+  flex-grow: 1; /* Allow items to grow */
+  position: relative; /* For connector positioning */
+}
+
+.stepContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex-shrink: 0; /* Prevent content from shrinking */
+  width: 90px; /* Give steps some consistent width */
+}
+
+.stepCircle {
+  width: 2.5rem; /* w-10 */
+  height: 2.5rem; /* h-10 */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700; /* font-bold */
+  border-width: 2px;
+  border-style: solid;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.stepLabel {
+  margin-top: 0.5rem; /* mt-2 */
+  font-size: 0.75rem; /* text-xs */
+  line-height: 1rem;
+  font-weight: 600; /* font-semibold */
+  transition: color 0.3s ease;
+  color: var(--text-tertiary);
+}
+
+.stepLabelActive {
+  color: var(--text-primary);
+}
+
+/* Status Styles */
+.upcomingStep {
+  background-color: var(--bg-elevated);
+  border-color: var(--border-default);
+  color: var(--text-tertiary);
+}
+
+.activeStep {
+  background-color: var(--primary-600);
+  border-color: var(--primary-500);
+  color: white;
+  animation: pulseGlow 2s ease-in-out infinite; /* Reuse animation */
+}
+
+.completedStep {
+  background-color: var(--color-success-bg); /* Use success color */
+  border-color: var(--color-success);
+  color: white;
+}
+
+/* Connector Line */
+.connector {
+  flex-grow: 1; /* Take up space between steps */
+  height: 4px; /* Slightly thicker line */
+  background-color: var(--border-subtle);
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  margin-top: calc(1.25rem - 2px); /* Align with center of circle (half height - half border) */
+  transition: background-color 0.3s ease;
+}
+
+.connectorCompleted {
+  background-color: var(--color-success); /* Use success color */
+}
+
+/* Keyframes for pulseGlow (if not defined globally) */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 5px var(--primary-500); }
+  50% { box-shadow: 0 0 15px var(--primary-300); }
+}

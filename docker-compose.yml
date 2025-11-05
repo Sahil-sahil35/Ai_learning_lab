@@ -1,0 +1,108 @@
+services:
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - mll-network
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      - VITE_API_URL=/api
+      - VITE_WS_URL=/.
+    networks:
+      - mll-network
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+    env_file:
+      - .env
+    environment:
+      - FLASK_ENV=production
+    volumes:
+      - ./backend:/app
+      - ./models:/app/models
+      - user_uploads:/app/uploads
+    networks:
+      - mll-network
+    depends_on:
+      - db
+      - broker
+    expose:
+      - "5000"
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: ./backend
+    command: celery -A celery_worker.celery worker --loglevel=info --concurrency=2
+    env_file:
+      - .env
+    environment:
+      - FLASK_ENV=production
+    volumes:
+      - ./backend:/app
+      - ./models:/app/models
+      - user_uploads:/app/uploads
+    networks:
+      - mll-network
+    depends_on:
+      - broker
+      - backend
+      - db
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
+
+  db:
+    image: postgres:15
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=ml_learnlab
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mll-network
+    ports:
+      - "5432:5432" # Expose for local debugging
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  broker:
+    image: redis:7-alpine
+    networks:
+      - mll-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  user_uploads:
+
+networks:
+  mll-network:
+    driver: bridge

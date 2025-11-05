@@ -1,0 +1,68 @@
+{
+  "id": "classical_random_forest",
+  "name": "Random Forest",
+  "type": "classical",
+  "data_type": "tabular",
+  "description": "An ensemble learning method using multiple decision trees. Good for classification and regression on structured data.",
+  "tags": ["Tabular", "Classification", "Regression", "Ensemble", "Beginner"],
+  "icon": "fas fa-tree",
+  "analysis_script": "analyze.py",
+  "cleaning_script": "clean.py",
+  "training_script": "train.py",
+  "parameters": [
+    {
+      "name": "target_column",
+      "label": "Target Column",
+      "type": "target_column",
+      "required": true,
+      "help": "Select the column containing the value your model should predict."
+    },
+    {
+      "name": "task_type",
+      "label": "Task Type (Optional)",
+      "type": "select",
+      "options": ["classification", "regression"],
+      "default": null,
+      "allow_empty": true,
+      "help": "Specify task type. If omitted, it will be inferred from the target column."
+    },
+    {
+      "name": "test_size",
+      "label": "Validation Split",
+      "type": "number",
+      "default": 0.2,
+      "min": 0.1,
+      "max": 0.5,
+      "step": 0.05,
+      "help": "Proportion of data held out for validation (e.g., 0.2 = 20%)."
+    },
+    {
+      "name": "n_estimators",
+      "label": "Number of Trees",
+      "type": "number",
+      "default": 100,
+      "min": 10,
+      "max": 1000,
+      "step": 10,
+      "help": "The number of decision trees in the forest. More trees generally improve accuracy but increase training time. (Default: 100)"
+    },
+    {
+      "name": "max_depth",
+      "label": "Max Tree Depth",
+      "type": "number",
+      "default": null,
+      "min": 1,
+      "max": 100,
+      "allow_empty": true,
+      "help": "Maximum depth of individual trees. Leave empty for unlimited depth (can lead to overfitting). (Default: Unlimited)"
+    },
+     {
+      "name": "random_state",
+      "label": "Random Seed",
+      "type": "number",
+      "default": 42,
+      "min": 0,
+      "help": "Seed for random number generation to ensure reproducible results."
+    }
+  ]
+}

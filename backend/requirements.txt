@@ -1,0 +1,38 @@
+# Flask & Web Server
+Flask
+flask-cors
+gunicorn
+python-dotenv
+flask-socketio
+eventlet  # WebSocket server for Gunicorn
+
+# Celery & Redis
+celery
+redis
+
+# Database (Postgres)
+SQLAlchemy
+psycopg2-binary
+Flask-SQLAlchemy
+Flask-Migrate
+
+# Data & API
+Flask-Bcrypt
+Flask-JWT-Extended
+Flask-Marshmallow
+marshmallow-sqlalchemy
+pandas
+numpy
+
+# Core ML Libraries
+scikit-learn
+torch
+torchvision
+torchaudio
+transformers
+datasets
+evaluate
+xgboost
+matplotlib
+seaborn
+plotly

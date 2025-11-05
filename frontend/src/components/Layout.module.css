@@ -1,0 +1,39 @@
+/* frontend/src/components/Layout.module.css */
+.layoutContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Occupy full viewport height */
+  overflow: hidden; /* Prevent body scroll */
+}
+
+.contentWrapper {
+  display: flex;
+  flex-grow: 1; /* Allow content to fill remaining space */
+  overflow: hidden; /* Prevent wrapper scroll */
+}
+
+/* Optional Sidebar styling (if you add it later) */
+/*
+.sidebar {
+  width: 250px; // Example width
+  background-color: var(--bg-elevated);
+  border-right: 1px solid var(--border-subtle);
+  padding: 1rem;
+  overflow-y: auto; // Allow sidebar scrolling
+  flex-shrink: 0; // Prevent sidebar from shrinking
+}
+*/
+
+.mainContent {
+  flex-grow: 1; /* Allow main content to fill space */
+  overflow-y: auto; /* Enable scrolling ONLY for the main content */
+  background-color: var(--bg-default);
+  padding: 1rem; /* Default padding */
+}
+
+/* Larger padding for medium screens and up */
+@media (min-width: 768px) {
+  .mainContent {
+    padding: 2rem;
+  }
+}

@@ -1,0 +1,217 @@
+/* frontend/src/pages/Dashboard.module.css */
+.dashboardContainer {
+  max-width: 1280px; /* max-w-7xl */
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem; /* mb-8 */
+}
+
+.header h1 {
+  font-size: 1.875rem; /* text-3xl */
+  line-height: 2.25rem;
+  font-weight: 700; /* font-bold */
+  color: var(--text-primary);
+  margin: 0; /* Remove default margin */
+}
+
+/* Base button style (reusable - could move to a global component CSS) */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem; /* py-2 px-5 */
+  border-radius: 0.5rem; /* rounded-lg */
+  font-weight: 600; /* font-semibold */
+  text-decoration: none;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.newTaskButton {
+  composes: button; /* Inherit base button styles */
+  background-color: var(--primary-600);
+  color: white;
+  border-color: var(--primary-600);
+}
+.newTaskButton:hover {
+  background-color: var(--primary-700);
+  border-color: var(--primary-700);
+}
+
+.taskListContainer {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.5rem; /* rounded-lg */
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-lg */
+  padding: 1.5rem; /* p-6 */
+}
+
+.taskListTitle {
+  font-size: 1.5rem; /* text-2xl */
+  line-height: 2rem;
+  font-weight: 600; /* font-semibold */
+  color: var(--text-primary);
+  margin-bottom: 1.5rem; /* mb-6 */
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Styles for Loading / Error / Empty states */
+.stateIndicator {
+  text-align: center;
+  padding: 2.5rem 0; /* py-10 */
+  color: var(--text-secondary);
+}
+.stateIndicator svg { /* Target FontAwesome icon */
+  color: var(--primary-400); /* Default icon color */
+}
+.stateIndicator p {
+  margin-top: 0.5rem; /* mt-2 */
+}
+.stateIndicator h3 {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 600; /* font-semibold */
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0; /* mb-2 */
+}
+.stateIndicator a { /* Style the link within empty state */
+  margin-top: 1.5rem; /* mb-6 */
+}
+
+.errorState svg {
+  color: var(--color-error); /* Red icon for error */
+}
+.errorState p {
+  color: var(--color-error);
+}
+
+.emptyIcon {
+  font-size: 3rem; /* size="3x" */
+  color: var(--text-tertiary) !important; /* Override default */
+  margin-bottom: 1rem; /* mb-4 */
+}
+
+
+/* Task List Styles */
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* space-y-4 */
+}
+
+.taskCard {
+  background-color: var(--bg-default);
+  border: 1px solid var(--border-default);
+  padding: 1rem; /* p-4 */
+  border-radius: 0.5rem; /* rounded-lg */
+  transition: border-color 0.2s ease-in-out;
+}
+.taskCard:hover {
+  border-color: var(--primary-600);
+}
+
+.taskCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem; /* Add gap */
+}
+
+.taskName {
+  font-size: 1.125rem; /* text-lg */
+  line-height: 1.75rem;
+  font-weight: 600; /* font-semibold */
+  color: var(--text-primary);
+}
+
+.taskDescription {
+  font-size: 0.875rem; /* text-sm */
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+.taskDate {
+  font-size: 0.75rem; /* text-xs */
+  color: var(--text-tertiary);
+  margin-top: 0.25rem; /* mt-1 */
+}
+
+.addModelButton {
+  composes: button;
+  background-color: var(--primary-600);
+  color: white;
+  padding: 0.5rem 1rem; /* py-2 px-4 */
+  font-size: 0.875rem; /* text-sm */
+  flex-shrink: 0; /* Prevent button from shrinking */
+}
+.addModelButton:hover {
+  background-color: var(--primary-700);
+}
+
+.modelRunsSection {
+  margin-top: 1rem; /* mt-4 */
+  padding-top: 1rem; /* pt-4 */
+  border-top: 1px solid var(--border-subtle);
+}
+
+.modelRunsSection h4 {
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 600; /* font-semibold */
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem; /* mb-2 */
+}
+
+.modelRunsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* space-y-2 */
+}
+
+.modelRunItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem; /* p-3 */
+  background-color: var(--bg-elevated);
+  border-radius: 0.375rem; /* rounded-md */
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.modelRunItem:hover {
+  background-color: var(--border-subtle);
+  text-decoration: none;
+}
+
+.modelName {
+  font-weight: 500; /* font-medium */
+  color: var(--text-primary);
+  margin-right: 0.75rem; /* ml-3 */
+}
+
+.statusBadge {
+  font-size: 0.75rem; /* text-xs */
+  font-family: monospace;
+}
+
+.modelRunChevron {
+  color: var(--text-tertiary);
+}
+
+/* Status Colors */
+.statusSuccess { color: var(--color-success); }
+.statusFailed { color: var(--color-error); }
+.statusRunning { color: var(--color-info); animation: pulse 1.5s infinite ease-in-out; }
+.statusPending { color: var(--color-warning); }
+
+/* Pulse animation for running status */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}

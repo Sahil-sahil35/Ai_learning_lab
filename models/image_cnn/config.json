@@ -1,0 +1,38 @@
+{
+  "id": "image_cnn",
+  "name": "Image Classifier (CNN)",
+  "type": "deep_learning",
+  "data_type": "image_zip",
+  "description": "A powerful Convolutional Neural Network (CNN) based on the ResNet18 architecture. Ideal for image classification tasks.",
+  "tags": ["Image", "Classification", "Deep Learning", "Intermediate", "CNN"],
+  "icon": "fas fa-image",
+  "analysis_script": "analyze.py",
+  "training_script": "train.py",
+  "parameters": [
+    {
+      "name": "n_estimators",
+      "label": "Epochs",
+      "type": "number",
+      "default": 10,
+      "min": 1,
+      "max": 50,
+      "help": "An epoch is one full pass through the entire training dataset. (Default: 10)"
+    },
+    {
+      "name": "batch_size",
+      "label": "Batch Size",
+      "type": "select",
+      "options": [8, 16, 32, 64],
+      "default": 32,
+      "help": "The number of images to process at one time. A smaller batch size uses less memory. (Default: 32)"
+    },
+    {
+      "name": "learning_rate",
+      "label": "Learning Rate",
+      "type": "select",
+      "options": [0.01, 0.001, 0.0001],
+      "default": 0.001,
+      "help": "Controls how much the model's weights are adjusted during training. This is a critical parameter. (Default: 0.001)"
+    }
+  ]
+}

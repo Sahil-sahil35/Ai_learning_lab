@@ -1,0 +1,6 @@
+/* frontend/src/components/charts/LiveLineChart.module.css */
+.chartWrapper {
+  height: 20rem; /* h-80 */
+  width: 100%;
+  position: relative; /* Required by Chart.js for responsiveness */
+}

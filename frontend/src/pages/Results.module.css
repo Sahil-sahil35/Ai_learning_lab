@@ -1,0 +1,305 @@
+/* frontend/src/pages/Results.module.css */
+
+/* Centered state for loading/error */
+.centeredState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 1rem; /* py-20 */
+  min-height: 300px;
+  color: var(--text-secondary);
+}
+.errorState {
+  color: var(--color-error);
+}
+.errorState p {
+  color: var(--color-error);
+  margin-top: 1rem;
+}
+.backLink {
+  margin-top: 1.5rem; /* mt-6 */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem; /* mr-2 handled by gap */
+  color: var(--primary-400);
+  font-weight: 500;
+  text-decoration: none;
+}
+.backLink:hover {
+  color: var(--primary-300);
+  text-decoration: underline;
+}
+
+/* Status Banner Styles */
+.banner {
+  border: 1px solid;
+  color: var(--text-primary);
+  padding: 1.5rem; /* p-6 */
+  border-radius: 0.5rem; /* rounded-lg */
+  margin-bottom: 2rem; /* mb-8 */
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* space-x-4 */
+}
+.banner svg { /* Target FontAwesome icon */
+   font-size: 1.5rem; /* size="2x" */
+   flex-shrink: 0; /* Prevent icon shrinking */
+}
+.banner h1 {
+  font-size: 1.5rem; /* text-2xl */
+  font-weight: 700; /* font-bold */
+  color: white;
+  margin: 0 0 0.25rem 0;
+}
+.banner p {
+  margin: 0;
+  opacity: 0.9;
+}
+.banner span {
+  font-weight: 700; /* font-bold */
+}
+
+.successBanner {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success);
+  color: #d1fae5; /* Lighter green text */
+}
+
+.warningBanner {
+  background-color: #78350f; /* amber-900 */
+  border-color: var(--color-warning);
+  color: #fef3c7; /* Lighter yellow text */
+}
+
+
+/* Main Layout Grid */
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr; /* 1 column default */
+  gap: 1.5rem; /* gap-6 */
+}
+@media (min-width: 1024px) { /* lg:grid-cols-3 */
+  .mainGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* space-y-6 */
+}
+@media (min-width: 1024px) { /* lg:col-span-2 */
+  .leftColumn {
+    grid-column: span 2 / span 2;
+  }
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* space-y-6 */
+}
+
+/* Card base style */
+.card {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.5rem; /* rounded-lg */
+  padding: 1.5rem; /* p-6 */
+}
+.card h2 {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 600; /* font-semibold */
+  color: var(--text-primary);
+  margin-bottom: 1.5rem; /* mb-6 for metrics/viz, mb-4 for sidebar */
+  padding-bottom: 0.75rem; /* Separator line */
+  border-bottom: 1px solid var(--border-default);
+}
+.sidebarCard h2 {
+   margin-bottom: 1rem; /* mb-4 */
+}
+
+/* Metrics Grid */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns default */
+  gap: 1rem; /* gap-4 */
+}
+@media (min-width: 768px) { /* md:grid-cols-4 */
+  .metricsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Visualizations Grid */
+.visualizationsGrid {
+  display: grid;
+  grid-template-columns: 1fr; /* 1 column default */
+  gap: 1.5rem; /* gap-6 */
+}
+@media (min-width: 768px) { /* md:grid-cols-2 */
+  .visualizationsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.vizItem {
+  background-color: var(--bg-default);
+  border: 1px solid var(--border-default);
+  border-radius: 0.5rem; /* rounded-lg */
+  padding: 1rem; /* p-4 */
+  position: relative; /* For download button */
+}
+.vizItem h3 {
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 600; /* font-semibold */
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem; /* mb-3 */
+}
+
+.vizContent {
+  position: relative; /* For download button */
+}
+.vizContent:hover .vizDownloadButton {
+   opacity: 1; /* Show download on hover */
+}
+
+
+.vizIframe {
+  width: 100%;
+  height: 20rem; /* h-80 */
+  border: none;
+  border-radius: 0.375rem; /* rounded-md */
+  /* Scaling was causing issues, rely on height/width */
+}
+
+.vizImage {
+  width: 100%;
+  height: auto;
+  max-height: 20rem; /* max-h-80 */
+  object-fit: contain;
+  border-radius: 0.375rem; /* rounded-md */
+}
+
+.vizDownloadButton {
+  position: absolute;
+  top: 0.5rem; /* top-2 */
+  right: 0.5rem; /* right-2 */
+  background-color: rgba(17, 24, 39, 0.7); /* bg-black/bg-opacity-60 approx */
+  color: white;
+  padding: 0.375rem; /* Adjust padding */
+  border-radius: 50%; /* rounded-full */
+  font-size: 0.75rem; /* text-xs */
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  line-height: 1; /* Ensure icon is centered */
+  width: 1.5rem; /* Explicit size */
+  height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.vizDownloadButton:hover {
+  background-color: rgba(17, 24, 39, 0.9);
+}
+
+/* Summary List */
+.summaryList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* space-y-3 */
+  font-size: 0.875rem; /* text-sm */
+  color: var(--text-secondary);
+}
+.summaryList li {
+  display: flex;
+  align-items: flex-start; /* Align icon top */
+  gap: 0.75rem; /* mr-3 equivalent */
+}
+.summaryList li svg { /* Target FontAwesome */
+   color: var(--primary-400);
+   margin-top: 0.125rem; /* mt-1 equivalent */
+   flex-shrink: 0;
+}
+.summaryList li span:last-child {
+   font-weight: 600; /* font-semibold */
+   color: var(--text-primary);
+}
+.summaryDivider {
+  padding-top: 0.75rem; /* pt-3 */
+  border-top: 1px solid var(--border-default);
+  justify-content: space-between; /* Align time */
+}
+
+
+/* Download List */
+.downloadList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* space-y-3 */
+}
+
+.downloadLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background-color: var(--bg-default);
+  padding: 0.75rem; /* p-3 */
+  border-radius: 0.375rem; /* rounded-md */
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.downloadLink:hover {
+  background-color: var(--border-subtle);
+  text-decoration: none;
+}
+
+.downloadFileInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* mr-2 handled by gap */
+  font-size: 0.875rem; /* text-sm */
+  color: var(--text-primary);
+  overflow: hidden; /* Prevent long filenames breaking layout */
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.downloadFileInfo svg {
+  color: var(--primary-400);
+  flex-shrink: 0;
+}
+
+.downloadIcon {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+/* Action Button */
+.actionButton {
+  /* Reuse base button style */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem; /* py-3 */
+  background-color: var(--primary-600);
+  color: white;
+  font-weight: 600; /* font-semibold */
+  border-radius: 0.5rem; /* rounded-lg */
+  border: 1px solid var(--primary-600);
+  transition: background-color 0.2s;
+  text-decoration: none;
+}
+.actionButton:hover {
+  background-color: var(--primary-700);
+  border-color: var(--primary-700);
+  text-decoration: none;
+}

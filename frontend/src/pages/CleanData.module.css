@@ -1,0 +1,202 @@
+/* frontend/src/pages/CleanData.module.css */
+/* Reuse styles from AnalyzeData where applicable */
+@import './AnalyzeData.module.css'; /* Import to reuse header, grid, card styles */
+
+.optionsForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* space-y-6 */
+}
+
+.optionGroup {
+  border: 1px solid var(--border-default);
+  border-radius: 0.375rem; /* rounded-md */
+  padding: 1rem;
+}
+
+.optionToggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 500; /* font-medium */
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem; /* mb-3 */
+}
+.optionToggle input[type="checkbox"] {
+  width: 1rem; /* w-4 */
+  height: 1rem; /* h-4 */
+  margin-right: 0.75rem; /* mr-3 */
+  accent-color: var(--primary-600); /* Color the checkbox */
+}
+
+.optionSelect {
+  width: 100%;
+  padding: 0.5rem 0.75rem; /* Adjust padding */
+  background-color: var(--bg-default);
+  border: 1px solid var(--border-default);
+  border-radius: 0.375rem; /* rounded-md */
+  color: var(--text-primary);
+  /* Add dropdown arrow */
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.7rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+.optionSelect:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 2px var(--primary-700);
+}
+
+.reportSummary {
+    background-color: var(--bg-default);
+    border: 1px solid var(--border-default);
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.infoText { color: var(--text-secondary); font-style: italic; } 
+.reportIssue { color: var(--color-error); font-weight: 500; margin-top: 0.5rem; }
+
+/* frontend/src/pages/CleanData.module.css */
+/* Reuse styles from AnalyzeData where applicable */
+
+
+/* ... (keep existing styles for optionsForm, optionGroup, optionToggle, optionSelect, reportSummary) ... */
+
+/* --- START ADDED/UPDATED STYLES --- */
+.previewSection {
+    margin-top: 1.5rem; /* Add space between sections */
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-default);
+}
+.previewSection h4 {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.tablePreviewContainer {
+  overflow-x: auto;
+  max-height: 300px; /* Limit height */
+  border: 1px solid var(--border-default);
+  border-radius: 0.375rem;
+  background-color: var(--bg-default); /* Ensure background */
+}
+.tablePreviewContainer table {
+  width: 100%;
+  min-width: 600px; /* Prevent excessive squishing */
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+.tablePreviewContainer th,
+.tablePreviewContainer td {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border-subtle);
+  text-align: left;
+  white-space: nowrap;
+}
+.tablePreviewContainer th {
+  background-color: var(--bg-elevated);
+  position: sticky; top: 0; /* Keep headers visible */
+  z-index: 1; /* Ensure headers are above scrolling content */
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.tablePreviewContainer td {
+    color: var(--text-secondary);
+}
+
+/* Cell Highlighting */
+.problemCell {
+  background-color: rgba(239, 68, 68, 0.15); /* Slightly transparent red */
+  color: #fca5a5; /* Lighter red text */
+  font-weight: 500;
+}
+.nullValueCell {
+   background-color: rgba(245, 158, 11, 0.1); /* Slightly transparent warning color */
+}
+.nullValue { /* Style for the word NULL */
+  color: var(--color-warning);
+  font-style: italic;
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
+.previewNote {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+/* File list preview */
+.fileListPreview { /* Styles for image/zip preview */
+  list-style: none;
+  padding: 1rem;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  background-color: var(--bg-default);
+  border: 1px solid var(--border-default);
+  border-radius: 0.375rem;
+}
+.fileListPreview p { font-family: inherit; margin-bottom: 0.5rem; color: var(--text-primary);}
+.fileListPreview li {
+    padding: 0.2rem 0.5rem;
+    border-bottom: 1px dashed var(--border-subtle);
+}
+.fileListPreview li:last-child { border-bottom: none; }
+
+
+/* Log Line Styles (Ensure these are defined or imported correctly) */
+.logsCardContainer { composes: logsCardContainer from './AnalyzeData.module.css'; }
+.logsContainer { composes: logsContainer from './AnalyzeData.module.css'; }
+.logLineBase { composes: logLineBase from './AnalyzeData.module.css'; }
+.logLineInfo { composes: logLineInfo from './AnalyzeData.module.css'; }
+.logLineError { composes: logLineError from './AnalyzeData.module.css'; }
+.logLineSuccess { composes: logLineSuccess from './AnalyzeData.module.css'; }
+.logLineMetric { composes: logLineMetric from './AnalyzeData.module.css'; }
+.logLineProgress { composes: logLineProgress from './AnalyzeData.module.css'; }
+.logLineClient { composes: logLineClient from './AnalyzeData.module.css'; }
+.logTimestamp { composes: logTimestamp from './AnalyzeData.module.css'; }
+.logMessage { composes: logMessage from './AnalyzeData.module.css'; }
+.logLineWarning { composes: logLineBase; color: var(--color-warning); } /* Add warning style */
+
+/* Skip Button Style */
+.skipButton {
+    /* Reuse base button style */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 0.75rem; /* mt-3 */
+    padding: 0.75rem 1rem; /* py-3 */
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-default);
+    border-radius: 0.5rem; /* rounded-lg */
+    font-weight: 600; /* font-semibold */
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+    cursor: pointer;
+}
+.skipButton:hover:not(:disabled) {
+    background-color: var(--border-subtle);
+    border-color: var(--border-subtle);
+    color: var(--text-primary);
+}
+.skipButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* --- END ADDED/UPDATED STYLES --- */

@@ -1,0 +1,203 @@
+/* frontend/src/pages/UploadData.module.css */
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px; /* Give it some height */
+}
+
+.gridContainer {
+  max-width: 56rem; /* max-w-4xl */
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem; /* gap-8 */
+}
+@media (min-width: 1024px) { /* lg:grid-cols-2 */
+  .gridContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.5rem; /* rounded-lg */
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-lg */
+  padding: 2rem; /* p-8 */
+}
+.card h1 { /* Page title */
+  font-size: 1.5rem; /* text-2xl */
+  font-weight: 700; /* font-bold */
+  color: var(--text-primary);
+  margin-bottom: 0.5rem; /* mb-2 */
+}
+.card h2 { /* Section title */
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 600; /* font-semibold */
+  color: var(--text-primary);
+  margin-bottom: 1rem; /* mb-4 */
+}
+.subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem; /* mb-6 */
+}
+.modelName {
+  font-weight: 600;
+  color: var(--primary-400);
+}
+
+.dropzone {
+  border: 2px dashed var(--border-default);
+  border-radius: 0.5rem; /* rounded-lg */
+  padding: 2.5rem; /* p-10 */
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.dropzone:hover {
+  border-color: var(--primary-600);
+}
+.dropzoneActive {
+  border-color: var(--primary-500);
+  background-color: var(--primary-950); /* Darker primary */
+}
+
+.dropzoneIcon {
+  font-size: 3rem; /* text-5xl */
+  color: var(--text-tertiary);
+  transition: color 0.2s ease;
+}
+.dropzoneActive .dropzoneIcon {
+  color: var(--primary-300);
+}
+
+.dropzoneText {
+  margin-top: 1rem; /* mt-4 */
+  color: var(--text-secondary);
+}
+.dropzoneTextActive {
+  margin-top: 1rem; /* mt-4 */
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 600; /* font-semibold */
+  color: var(--primary-300);
+}
+.dropzoneHint {
+    font-size: 0.75rem; /* text-xs */
+    color: var(--text-tertiary);
+    margin-top: 0.5rem;
+}
+
+.fileInfo {
+  margin-top: 1.5rem; /* mt-6 */
+  background-color: #064e3b; /* dark green bg-green-900 */
+  border: 1px solid #047857; /* border-green-700 */
+  color: #a7f3d0; /* text-green-200 */
+  padding: 1rem; /* p-4 */
+  border-radius: 0.5rem; /* rounded-lg */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.fileInfoContent {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* space-x-3 */
+}
+.fileInfoContent span {
+  font-family: monospace;
+  font-size: 0.875rem; /* text-sm */
+}
+.fileSize {
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 500; /* font-medium */
+}
+
+.uploadButton {
+  /* Use base button style from somewhere? For now define here */
+  display: flex; /* Added for centering icon */
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 1.5rem; /* mt-6 */
+  padding: 0.75rem 0; /* py-3 */
+  background-color: var(--primary-600);
+  color: white;
+  font-weight: 600; /* font-semibold */
+  border-radius: 0.5rem; /* rounded-lg */
+  transition: background-color 0.2s ease;
+}
+.uploadButton:hover {
+  background-color: var(--primary-700);
+}
+.uploadButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Instructions Column */
+.instructionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* space-y-4 */
+  color: var(--text-secondary);
+}
+
+.instructionItem {
+  display: flex;
+  align-items: flex-start; /* Align icon top */
+  gap: 0.75rem; /* space-x-3 */
+}
+.instructionIcon {
+  color: var(--primary-400);
+  font-size: 1.125rem; /* text-lg */
+  margin-top: 0.25rem; /* mt-1 */
+  flex-shrink: 0;
+}
+.instructionItem h3 {
+  font-weight: 600; /* font-semibold */
+  color: var(--text-primary);
+  margin: 0 0 0.25rem 0;
+}
+.instructionItem p {
+  font-size: 0.875rem; /* text-sm */
+}
+.instructionItem strong {
+    font-weight: 700;
+}
+
+.structureInfo {
+  padding: 1rem; /* p-4 */
+  background-color: var(--bg-default);
+  border-radius: 0.375rem; /* rounded-md */
+  border: 1px solid var(--border-default);
+}
+.structureInfo h4 {
+  font-weight: 600; /* font-semibold */
+  color: var(--text-primary);
+  margin-bottom: 0.5rem; /* mb-2 */
+}
+.structureInfo ul {
+  list-style: disc;
+  padding-left: 1.25rem; /* list-inside */
+  font-size: 0.875rem; /* text-sm */
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem; /* space-y-1 */
+}
+.structureInfo p {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.codeBlock {
+  font-family: monospace;
+  font-size: 0.75rem; /* text-xs */
+  background-color: var(--bg-default); /* Match parent */
+  padding: 0.5rem; /* p-2 */
+  border-radius: 0.375rem; /* rounded-md */
+  overflow-x: auto;
+  color: var(--text-tertiary);
+  margin-top: 0.5rem;
+}

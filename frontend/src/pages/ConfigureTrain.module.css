@@ -1,0 +1,162 @@
+/* frontend/src/pages/ConfigureTrain.module.css */
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px; /* Ensure spinner is visible */
+}
+
+.checkboxField{
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.configContainer {
+  max-width: 48rem; /* max-w-3xl */
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.configContainer h1 {
+  /* Inherits h1 style from index.css */
+  margin-bottom: 0.5rem; /* mb-2 */
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 2rem; /* mb-8 */
+  font-size: 1rem;
+}
+
+.modelName {
+  font-weight: 600; /* font-semibold */
+  color: var(--primary-400);
+}
+
+.formCard {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.5rem; /* rounded-lg */
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-lg */
+  padding: 2rem; /* p-8 */
+}
+
+/* Grid layout for form fields */
+.fieldsGrid {
+  display: grid;
+  grid-template-columns: 1fr; /* Default to 1 column */
+  gap: 1.5rem; /* space-y-6 equivalent */
+}
+@media (min-width: 768px) { /* On medium screens, use 2 columns */
+  .fieldsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem; /* Increase gap */
+  }
+}
+
+/* Individual form field container */
+.formField {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  display: flex; /* Use flex to align tooltip */
+  align-items: center;
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500; /* font-medium */
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem; /* mb-2 */
+}
+
+.tooltipWrapper {
+  margin-left: 0.5rem;
+  color: var(--text-tertiary);
+  cursor: help;
+}
+
+.tooltipIcon {
+  font-size: 0.875rem;
+}
+
+
+/* Input and Select Styles */
+.inputField,
+.selectField {
+  width: 100%;
+  padding: 0.75rem 1rem; /* py-3 px-4 equivalent */
+  background-color: var(--bg-default);
+  border: 1px solid var(--border-default);
+  border-radius: 0.375rem; /* rounded-md */
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  line-height: 1.5; /* Ensure consistent height */
+}
+.selectField {
+  /* Add dropdown arrow */
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.7rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+
+.inputField::placeholder {
+  color: var(--text-placeholder);
+}
+
+.inputField:focus,
+.selectField:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 2px var(--primary-700);
+}
+
+/* Style disabled state */
+.inputField:disabled,
+.selectField:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--border-subtle);
+}
+
+.helpText {
+  font-size: 0.75rem; /* text-xs */
+  color: var(--text-tertiary);
+  margin-top: 0.5rem; /* mt-2 */
+}
+
+/* Submit Section */
+.submitSection {
+  margin-top: 2rem; /* mt-8 */
+  padding-top: 1.5rem; /* pt-6 */
+  border-top: 1px solid var(--border-default);
+}
+
+.submitButton {
+  /* Reuse base button style */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%; /* Full width */
+  padding: 0.75rem 1rem; /* py-3 */
+  background-color: var(--primary-600);
+  color: white;
+  font-weight: 600; /* font-semibold */
+  border-radius: 0.5rem; /* rounded-lg */
+  border: 1px solid var(--primary-600);
+  transition: background-color 0.2s;
+}
+.submitButton:hover {
+  background-color: var(--primary-700);
+  border-color: var(--primary-700);
+}
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

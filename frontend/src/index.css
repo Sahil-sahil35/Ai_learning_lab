@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Define our production-ready dark theme variables */
+:root {
+  /* Brand Colors */
+  --primary-50: #f0f6ff;
+  --primary-100: #e0edff;
+  --primary-200: #c8dfff;
+  --primary-300: #a4caff;
+  --primary-400: #7babfe;
+  --primary-500: #578cfa;
+  --primary-600: #4272f3;
+  --primary-700: #3458e3;
+  --primary-800: #2a49b9;
+  --primary-900: #254095;
+  --primary-950: #1a2a62;
+
+  /* Neutral Colors (Dark Mode) */
+  --bg-default: #111827; /* gray-900 */
+  --bg-elevated: #1F2937; /* gray-800 */
+  --bg-card: #1F2937; /* gray-800 */
+  --border-subtle: #374151; /* gray-700 */
+  --border-default: #4B5563; /* gray-600 */
+
+  --text-primary: #F9FAFB; /* gray-50 */
+  --text-secondary: #D1D5DB; /* gray-300 */
+  --text-tertiary: #9CA3AF; /* gray-400 */
+  --text-placeholder: #6B7280; /* gray-500 */
+
+  --text-accent: var(--primary-400);
+  --text-accent-hover: var(--primary-300);
+
+  /* Added Semantic Colors */
+  --color-success: #10b981; /* emerald-500 */
+  --color-success-bg: #059669; /* emerald-600 */
+  --color-error: #ef4444; /* red-500 */
+  --color-error-bg: #dc2626; /* red-600 */
+  --color-warning: #f59e0b; /* amber-500 */
+  --color-info: #3b82f6; /* blue-500 */
+
+  /* Font settings */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Basic Reset (Minimal version of Tailwind Preflight) */
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: var(--border-default);
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  color-scheme: dark;
+  line-height: 1.5;
+}
+
+body {
+  background-color: var(--bg-default);
+  color: var(--text-secondary);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0 0 0.5em 0; /* Add bottom margin */
+}
+h1 { font-size: 2.25rem; line-height: 2.5rem; font-weight: 700; color: var(--text-primary); } /* text-4xl font-bold */
+h2 { font-size: 1.5rem; line-height: 2rem; font-weight: 600; color: var(--text-primary); } /* text-2xl font-semibold */
+h3 { font-size: 1.25rem; line-height: 1.75rem; font-weight: 600; color: var(--text-primary); } /* text-xl font-semibold */
+/* ... add more default heading styles if needed */
+
+a {
+  color: var(--text-accent);
+  text-decoration: inherit;
+}
+a:hover {
+  color: var(--text-accent-hover);
+  text-decoration: underline;
+}
+
+button {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+}
+
+input, select, textarea {
+   font: inherit;
+   color: var(--text-primary);
+   background-color: var(--bg-default);
+   border: 1px solid var(--border-default);
+   border-radius: 0.375rem; /* rounded-md */
+   padding: 0.5rem 0.75rem;
+}
+input::placeholder, textarea::placeholder {
+  color: var(--text-placeholder);
+}
+
+/* Custom scrollbar (Keep) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-elevated);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}

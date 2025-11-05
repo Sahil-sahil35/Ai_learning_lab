@@ -1,0 +1,158 @@
+/* frontend/src/pages/ModelSelection.module.css */
+.pageContainer {
+  max-width: 1280px; /* max-w-7xl */
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.pageHeader {
+  text-align: center;
+  margin-bottom: 3rem; /* mb-12 */
+}
+.pageHeader h1 {
+  /* Inherits h1 styles */
+  margin-bottom: 1rem; /* mb-4 */
+}
+.pageHeader p {
+  font-size: 1.25rem; /* text-xl */
+  color: var(--text-secondary);
+  max-width: 48rem; /* max-w-3xl */
+  margin: 0 auto;
+}
+
+/* Loading and Error States */
+.loadingState,
+.errorState {
+  text-align: center;
+  padding: 5rem 0; /* py-20 */
+}
+.loadingState p,
+.errorState p {
+  margin-top: 1rem; /* mt-4 */
+  color: var(--text-secondary);
+}
+.errorState {
+  color: var(--color-error); /* text-red-400 */
+}
+.errorState p {
+  color: var(--color-error);
+}
+
+/* Model Grid Layout */
+.modelGrid {
+  display: grid;
+  grid-template-columns: 1fr; /* 1 column default */
+  gap: 2rem; /* gap-8 */
+}
+@media (min-width: 768px) { /* md:grid-cols-2 */
+  .modelGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) { /* lg:grid-cols-3 */
+  .modelGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* --- ModelCard Styles --- */
+.modelCard {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 0.5rem; /* rounded-lg */
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-lg equivalent */
+  padding: 1.5rem; /* p-6 */
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease-out, border-color 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+.modelCard:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary-600);
+  box-shadow: 0 10px 15px -3px rgba(66, 114, 243, 0.2), 0 4px 6px -2px rgba(66, 114, 243, 0.1); /* Enhanced shadow on hover */
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Align icon top, tags top */
+  margin-bottom: 1rem; /* mb-4 */
+}
+
+.cardIconWrapper {
+  width: 3rem; /* w-12 */
+  height: 3rem; /* h-12 */
+  background-color: var(--primary-800);
+  border-radius: 0.5rem; /* rounded-lg */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.cardIcon {
+  color: var(--primary-300);
+  font-size: 1.25rem; /* text-xl */
+}
+
+.cardTags {
+  display: flex;
+  flex-wrap: wrap; /* Allow tags to wrap */
+  gap: 0.5rem; /* gap-2 */
+  justify-content: flex-end; /* Align tags to the right */
+  margin-left: 1rem; /* Space between icon and tags */
+}
+
+.tag {
+  padding: 0.125rem 0.625rem; /* Adjust for px-2 py-0.5 feel */
+  border-radius: 9999px; /* rounded-full */
+  font-size: 0.75rem; /* text-xs */
+  line-height: 1rem;
+  font-weight: 600; /* font-semibold */
+  white-space: nowrap;
+}
+/* Tag Colors */
+.tagDefault { background-color: var(--border-subtle); color: var(--text-secondary); }
+.tagBeginner { background-color: rgba(16, 185, 129, 0.2); color: #6ee7b7; } /* bg-green-800/text-green-300 approximation */
+.tagIntermediate { background-color: rgba(217, 119, 6, 0.2); color: #fcd34d; } /* bg-yellow-800/text-yellow-300 approximation */
+.tagAdvanced { background-color: rgba(220, 38, 38, 0.2); color: #fca5a5; } /* bg-red-800/text-red-300 approximation */
+.tagClassification { background-color: rgba(59, 130, 246, 0.2); color: #93c5fd; } /* bg-blue-800/text-blue-300 approximation */
+.tagRegression { background-color: rgba(139, 92, 246, 0.2); color: #c4b5fd; } /* bg-purple-800/text-purple-300 approximation */
+
+.cardBody {
+  margin-bottom: 1.5rem; /* mb-6 */
+  flex-grow: 1; /* Make description push footer down */
+}
+
+.cardTitle {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 600; /* font-semibold */
+  color: var(--text-primary);
+  margin-bottom: 0.5rem; /* mb-2 */
+}
+
+.cardDescription {
+  color: var(--text-secondary);
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.4; /* Adjust line height for readability */
+}
+
+.cardFooter {
+  margin-top: auto; /* Push footer to bottom */
+}
+
+.selectButton {
+  /* Reuse base button style, adjust specifics */
+  display: block; /* Make it full width */
+  width: 100%;
+  padding: 0.75rem 1rem; /* py-3 */
+  background-color: var(--primary-600);
+  color: white;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  text-align: center;
+  transition: background-color 0.2s ease;
+}
+.selectButton:hover {
+  background-color: var(--primary-700);
+}

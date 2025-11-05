@@ -1,0 +1,202 @@
+/* frontend/src/pages/Training.module.css */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem; /* mb-6 */
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+  gap: 1rem;
+}
+.header h1 {
+  /* Inherits h1 style */
+  margin: 0;
+}
+.header p {
+  color: var(--text-secondary);
+}
+.loadingContainer, .errorContainer { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; color: var(--text-secondary); }
+.errorContainer { color: var(--color-error); }
+.errorContainer p { margin-top: 1rem; }
+.errorContainer button { margin-top: 1.5rem; }
+.modelName { font-weight: 600; color: var(--primary-400); }
+
+
+.runId {
+  font-family: monospace;
+  font-size: 0.875rem; /* text-sm */
+  background-color: var(--bg-elevated);
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--border-subtle);
+}
+
+.statusDisplay {
+  font-size: 1.125rem; /* text-lg based on previous attempt */
+  font-weight: 600; /* font-semibold */
+  display: flex;
+  align-items: center;
+}
+.statusIcon {
+   margin-right: 0.5rem; /* mr-2 */
+}
+/* Status colors */
+.statusTraining { color: var(--color-info); }
+.statusSuccess { color: var(--color-success); }
+.statusFailed { color: var(--color-error); }
+.statusPending { color: var(--color-warning); }
+
+
+/* Progress Card */
+.progressCard {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.5rem; /* rounded-lg */
+  padding: 1.5rem; /* p-6 */
+  margin-bottom: 1.5rem; /* mb-6 */
+}
+.progressCard h3 {
+  font-size: 1rem; /* Slightly smaller than h2 */
+  font-weight: 600;
+  margin-bottom: 1rem; /* mb-4 */
+  color: var(--text-primary);
+}
+
+.progressBarContainer {
+  width: 100%;
+  background-color: var(--bg-default);
+  border-radius: 9999px; /* rounded-full */
+  height: 1rem; /* h-4 */
+  border: 1px solid var(--border-default);
+  overflow: hidden; /* Ensure inner bar respects radius */
+}
+
+.progressBar {
+  background-color: var(--primary-600);
+  height: 100%;
+  border-radius: 9999px; /* rounded-full */
+}
+
+.progressText {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem; /* text-sm */
+  color: var(--text-secondary);
+  margin-top: 0.5rem; /* mt-2 */
+}
+
+/* Base button style (could move to global) */
+.buttonBase {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem; /* py-3 px-5 */
+  border-radius: 0.5rem; /* rounded-lg */
+  font-weight: 700; /* font-bold */
+  text-decoration: none;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+  border: 1px solid transparent;
+  cursor: pointer;
+  width: 100%; /* Make buttons full width */
+  margin-top: 1.5rem; /* mt-6 */
+}
+
+.resultsButton {
+  composes: buttonBase;
+  background-color: var(--color-success-bg);
+  color: white;
+  border-color: var(--color-success-bg);
+}
+.resultsButton:hover {
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.backButton {
+   composes: buttonBase;
+   background-color: var(--border-default);
+   color: var(--text-primary);
+   border-color: var(--border-default);
+}
+.backButton:hover {
+    background-color: var(--border-subtle);
+    border-color: var(--border-subtle);
+}
+
+.stopButton {
+   composes: buttonBase;
+   background-color: var(--color-error-bg);
+   color: white;
+   border-color: var(--color-error-bg);
+}
+.stopButton:hover {
+   background-color: var(--color-error);
+   border-color: var(--color-error);
+}
+
+
+/* Charts Grid */
+.chartsGrid {
+  display: grid;
+  grid-template-columns: 1fr; /* 1 column default */
+  gap: 1.5rem; /* gap-6 */
+  margin-bottom: 1.5rem; /* mb-6 */
+}
+@media (min-width: 1024px) { /* lg:grid-cols-2 */
+  .chartsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.chartCard {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.5rem; /* rounded-lg */
+  padding: 1.5rem; /* p-6 */
+  /* Height is controlled by the LiveLineChart component's wrapper */
+}
+
+/* Logs Section */
+.logsCard {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.5rem; /* rounded-lg */
+  padding: 1.5rem; /* p-6 */
+}
+.logsCard h3 {
+  font-size: 1rem; /* text-lg */
+  font-weight: 600;
+  margin-bottom: 1rem; /* mb-4 */
+  color: var(--text-primary);
+}
+
+.logsContainer {
+  height: 24rem; /* h-96 */
+  background-color: var(--bg-default);
+  padding: 1rem; /* p-4 */
+  border-radius: 0.375rem; /* rounded-md */
+  overflow-y: auto;
+  border: 1px solid var(--border-default); /* Add border for contrast */
+}
+
+.logLineBase {
+  font-family: monospace;
+  font-size: 0.75rem; /* text-xs */
+  white-space: pre-wrap; /* Allow wrapping */
+  margin-bottom: 0.25rem; /* Small space between lines */
+}
+.logLineInfo { composes: logLineBase; color: var(--text-tertiary); }
+.logLineError { composes: logLineBase; color: var(--color-error); }
+.logLineSuccess { composes: logLineBase; color: var(--color-success); }
+.logLineMetric { composes: logLineBase; color: var(--primary-400); }
+.logLineProgress { composes: logLineBase; color: var(--text-secondary); opacity: 0.8; }
+.logLineWarning { composes: logLineBase; color: var(--color-warning); }
+.logLineClient { composes: logLineBase; color: #a5b4fc; font-style: italic; }
+
+.logTimestamp {
+  color: var(--text-placeholder);
+  margin-right: 0.75rem; /* mr-3 */
+}
+.logMessage {
+  /* Takes color from parent (.logLine*) */
+}
