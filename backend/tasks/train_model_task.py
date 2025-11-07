@@ -2,7 +2,7 @@
 
 from celery_worker import celery
 from .base_task import JobReportingTask # Imports stream_output implicitly now
-from app.models import ModelRun
+from app.models_pkg import ModelRun
 from app import db
 import subprocess
 import os

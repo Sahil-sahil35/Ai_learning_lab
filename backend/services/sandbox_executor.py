@@ -52,18 +52,21 @@ class SandboxExecutor:
             with open(validation_script, 'w') as f:
                 f.write(self._get_validation_script(model_type))
 
-            # Resource limits
+            # Resource limits - enhanced for production
             limits = {
                 'memory': '2g',  # 2GB RAM
-                'cpu_quota': 50000,  # 50% of one CPU
+                'cpu_quota': 200000,  # Limit to 2 cores maximum
                 'cpu_period': 100000,
-                'blkio_weight': 100  # Low I/O priority
+                'blkio_weight': 100,  # Low I/O priority
+                'pids_limit': 50  # Limit process count
             }
 
-            # Security settings
+            # Security settings - hardened for production
             security_opts = [
                 'no-new-privileges:true',
-                'seccomp=unconfined',  # Allow ML libraries but could be more restrictive
+                'seccomp=default',  # Use default seccomp profile for better security
+                'apparmor:docker-default',  # Add AppArmor confinement
+                'label=disable'  # Disable labeling for better compatibility
             ]
 
             # Create container
@@ -79,9 +82,10 @@ class SandboxExecutor:
                 cpu_quota=limits['cpu_quota'],
                 cpu_period=limits['cpu_period'],
                 blkio_weight=limits['blkio_weight'],
+                pids_limit=limits['pids_limit'],
                 security_opt=security_opts,
                 read_only=False,  # Need to write to workspace
-                network_mode='bridge',  # Could use 'none' for more security
+                network_mode='none',  # Complete network isolation for security
                 remove=False  # We'll clean up manually
             )
 
@@ -229,10 +233,13 @@ if __name__ == "__main__":
 
     def train_model(self, code: str, model_type: str, data_path: str,
                     config: Dict[str, Any], model_id: str) -> Dict[str, Any]:
-        """Train model in sandbox environment."""
+        """Train model in sandbox environment with enhanced security and resource management."""
         container = None
         work_dir = None
         job_id = str(uuid.uuid4())
+
+        # Set training timeout (30 minutes max as per security requirements)
+        training_timeout = config.get('timeout', 1800)  # 30 minutes default
 
         try:
             # Create sandbox container

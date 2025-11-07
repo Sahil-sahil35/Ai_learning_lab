@@ -1,17 +1,46 @@
 import os
+import secrets
+import sys
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
 basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '..', '.env'))
 
+def validate_config():
+    """Validate configuration to ensure security requirements are met."""
+    errors = []
+
+    # Check if running with default secrets in production
+    if os.getenv('FLASK_CONFIG') == 'production':
+        secret_key = os.getenv('SECRET_KEY')
+        jwt_secret_key = os.getenv('JWT_SECRET_KEY')
+
+        if secret_key == 'a_very_hard_to_guess_secret_key':
+            errors.append("CRITICAL: Default SECRET_KEY detected in production!")
+        if jwt_secret_key == 'another_secret_key_for_jwt':
+            errors.append("CRITICAL: Default JWT_SECRET_KEY detected in production!")
+
+        if len(secret_key or '') < 32:
+            errors.append("CRITICAL: SECRET_KEY must be at least 32 characters in production!")
+        if len(jwt_secret_key or '') < 32:
+            errors.append("CRITICAL: JWT_SECRET_KEY must be at least 32 characters in production!")
+
+    if errors:
+        print("CRITICAL SECURITY CONFIGURATION ERRORS:")
+        for error in errors:
+            print(f"  - {error}")
+        print("\nPlease set proper environment variables before starting in production.")
+        sys.exit(1)
+
 class Config:
     """Base configuration."""
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'a_very_hard_to_guess_secret_key'
+    # Generate secure keys if not provided (for development only)
+    SECRET_KEY = os.environ.get('SECRET_KEY') or secrets.token_urlsafe(32)
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or secrets.token_urlsafe(32)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # JWT Configuration
-    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'another_secret_key_for_jwt'
     JWT_ACCESS_TOKEN_EXPIRES = os.environ.get('JWT_ACCESS_TOKEN_EXPIRES', 3600)  # 1 hour default
 
     # Celery Configuration
@@ -43,7 +72,10 @@ class ProductionConfig(Config):
     """Production configuration."""
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
-    # Add other production-specific settings here
+
+    def __init__(self):
+        # Validate configuration when production config is instantiated
+        validate_config()
 
 config = {
     'development': DevelopmentConfig,

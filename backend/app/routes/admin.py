@@ -11,15 +11,15 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from sqlalchemy import func, desc, or_, and_
 from sqlalchemy.orm import joinedload
 
-from .. import db
-from ..models import User, Task, ModelRun
-from ..models.enhanced import (
+from app import db
+from app.models_pkg import User, Task, ModelRun
+from app.models_pkg.enhanced import (
     AdminLog, SystemMetrics, UserSession, CustomModel, ExportJob,
     DataQualityReport, SecurityEvent, UserRole, ExportStatus
 )
-from ..middleware.security import security_monitor
-from ..middleware.rate_limiter import rate_limit
-from ..schemas import UserSchema, TaskSchema, ModelRunSchema
+from app.middleware.security import security_monitor
+from app.middleware.rate_limiter import rate_limit
+from app.schemas import UserSchema, TaskSchema, ModelRunSchema
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/api/admin')
 

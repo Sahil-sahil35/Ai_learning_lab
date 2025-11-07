@@ -196,16 +196,16 @@ const UploadData = () => {
                   <p>Your `.zip` must contain `train` and `val` folders, with class subfolders:</p>
                   <pre className={styles.codeBlock}>
                     {`your_data.zip/
-├── train/
-│   ├── class_A/
-│   │   ├── img1.jpg
-│   │   └── img2.png
-│   └── class_B/
-│       ├── img3.jpg
-│       └── ...
-└── val/
-    ├── class_A/
-    └── class_B/`}
+                        ├── train/
+                        │   ├── class_A/
+                        │   │   ├── img1.jpg
+                        │   │   └── img2.png
+                        │   └── class_B/
+                        │       ├── img3.jpg
+                        │       └── ...
+                        └── val/
+                            ├── class_A/
+                            └── class_B/`}
                   </pre>
                 </>
               )}

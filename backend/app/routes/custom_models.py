@@ -15,13 +15,13 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import desc, or_
 
 from .. import db
-from ..models import User
-from ..models.enhanced import (
+from ..models_pkg import User
+from ..models_pkg.enhanced import (
     CustomModel, CustomModelVersion, UserRole, CustomModelStatus
 )
 from ..middleware.security import security_monitor, InputValidator
 from ..middleware.rate_limiter import rate_limit
-from ..services.sandbox_executor import SandboxExecutor
+from services.sandbox_executor import SandboxExecutor
 
 custom_models_bp = Blueprint('custom_models', __name__, url_prefix='/api/custom-models')
 

@@ -105,6 +105,9 @@ const useAuthStore = create((set, get) => ({
     const user = get().user;
     return user && (user.role === 'admin' || user.role === 'super_admin');
   }
+
+
 }));
 
 export default useAuthStore;
+

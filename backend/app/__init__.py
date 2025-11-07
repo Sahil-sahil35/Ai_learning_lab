@@ -10,8 +10,15 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from flask_socketio import SocketIO
 from flask_marshmallow import Marshmallow
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from config import config
-import logging # Import logging
+import logging
+
+# Import custom error handling and logging
+from .utils.error_handlers import register_error_handlers, ErrorContext
+from .utils.logger import setup_logging, get_request_context, clear_request_context, get_logger
+from .utils.security import initialize_security
 
 # Initialize Extensions
 db = SQLAlchemy()
@@ -20,14 +27,21 @@ bcrypt = Bcrypt()
 jwt = JWTManager()
 cors = CORS()
 ma = Marshmallow()
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
+)
 # Initialize SocketIO with async_mode='eventlet' for production
 # Added engineio_logger=True, logger=True for debugging websockets
+# Get allowed origins from environment for security
+allowed_origins = os.getenv('ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
 socketio = SocketIO(
-    async_mode='eventlet', 
-    cors_allowed_origins="*", 
-    engineio_logger=True, 
-    logger=True, 
-    message_queue='redis://broker:6379/0'
+    async_mode='eventlet',
+    cors_allowed_origins=allowed_origins,
+    engineio_logger=True,
+    logger=True,
+    message_queue='redis://broker:6379/0',
+    cors_credentials=True
     )
 
 def create_app(config_name=None):
@@ -41,12 +55,16 @@ def create_app(config_name=None):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
 
-    # --- Configure Logging ---
-    # Ensure logs are visible in Docker
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    app.logger.handlers = gunicorn_logger.handlers
-    app.logger.setLevel(gunicorn_logger.level)
-    app.logger.info(f"Flask app created with config: {config_name}")
+    # --- Setup Structured Logging ---
+    setup_logging(app)
+    logger = get_logger('app')
+    logger.info(f"Flask app created with config: {config_name}")
+
+    # --- Register Error Handlers ---
+    register_error_handlers(app)
+
+    # --- Initialize Security Features ---
+    initialize_security(app)
 
 
     # --- Initialize Extensions with App ---
@@ -54,17 +72,19 @@ def create_app(config_name=None):
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     jwt.init_app(app)
-    cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
+    # Secure CORS configuration using environment-specific origins
+    cors.init_app(app, resources={r"/api/*": {"origins": allowed_origins}}, supports_credentials=True)
     ma.init_app(app)
+    limiter.init_app(app)
     socketio.init_app(app)
-    app.logger.info("Flask extensions initialized.")
+    logger.info("Flask extensions initialized.")
 
     # --- Create Application Directories ---
     # Ensure instance folder exists
     try:
         os.makedirs(app.instance_path, exist_ok=True) # Added exist_ok=True
     except OSError as e:
-         app.logger.error(f"Could not create instance path: {e}")
+         logger.error(f"Could not create instance path: {e}", error=str(e))
 
     # Ensure upload folder exists
     try:
@@ -72,20 +92,20 @@ def create_app(config_name=None):
         uploads_dir = app.config.get('USER_UPLOADS_DIR')
         if uploads_dir:
             os.makedirs(uploads_dir, exist_ok=True)
-            app.logger.info(f"Uploads directory ensured at: {uploads_dir}")
+            logger.info(f"Uploads directory ensured at: {uploads_dir}")
         else:
-            app.logger.error("USER_UPLOADS_DIR is not configured!")
+            logger.error("USER_UPLOADS_DIR is not configured!")
     except OSError as e:
-        app.logger.error(f"Could not create uploads directory: {e}")
+        logger.error(f"Could not create uploads directory: {e}", error=str(e))
     except Exception as e:
-         app.logger.error(f"Error checking uploads directory: {e}")
+         logger.error(f"Error checking uploads directory: {e}", error=str(e))
 
 
     # --- Register Blueprints (API Routes) ---
     with app.app_context():
         # MOVE IMPORTS INSIDE app_context
-        from .routes import auth, tasks, models, training, admin, custom_models, exports
-        app.logger.info("Registering blueprints...")
+        from .routes import auth, tasks, models, training, admin, custom_models, exports, health
+        logger.info("Registering blueprints...")
         app.register_blueprint(auth.auth_bp, url_prefix='/api/auth')
         app.register_blueprint(tasks.tasks_bp, url_prefix='/api/tasks')
         app.register_blueprint(models.models_bp, url_prefix='/api/models')
@@ -93,7 +113,8 @@ def create_app(config_name=None):
         app.register_blueprint(admin.admin_bp, url_prefix='/api/admin')
         app.register_blueprint(custom_models.custom_models_bp, url_prefix='/api/custom-models')
         app.register_blueprint(exports.exports_bp, url_prefix='/api/exports')
-        app.logger.info("Blueprints registered successfully.")
+        app.register_blueprint(health.health_bp, url_prefix='/api')
+        logger.info("Blueprints registered successfully.")
 
-    app.logger.info("Flask app creation complete.")
+    logger.info("Flask app creation complete.")
     return app

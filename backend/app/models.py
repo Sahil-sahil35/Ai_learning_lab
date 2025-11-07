@@ -5,7 +5,7 @@ import datetime
 import uuid
 from sqlalchemy.dialects.postgresql import UUID, JSONB # Use JSONB for Postgres
 from sqlalchemy import Enum
-from .models.enhanced import UserRole
+from .models_pkg.enhanced import UserRole
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -16,6 +16,16 @@ class User(db.Model):
     password_hash = db.Column(db.String(128), nullable=False)
     role = db.Column(Enum(UserRole), default=UserRole.STUDENT, nullable=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
+
+    # Email verification fields
+    email_verified = db.Column(db.Boolean, default=False, nullable=False)
+    email_verification_token = db.Column(db.String(255), nullable=True)
+    email_verification_expires = db.Column(db.DateTime, nullable=True)
+
+    # Password reset fields
+    password_reset_token = db.Column(db.String(255), nullable=True)
+    password_reset_expires = db.Column(db.DateTime, nullable=True)
+
     last_login = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
@@ -32,6 +42,42 @@ class User(db.Model):
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password_hash, password)
+
+    def set_email_verification_token(self, token: str, expires_in_hours: int = 24):
+        """Set email verification token with expiry."""
+        from datetime import datetime, timedelta
+        self.email_verification_token = token
+        self.email_verification_expires = datetime.utcnow() + timedelta(hours=expires_in_hours)
+
+    def verify_email(self, token: str) -> bool:
+        """Verify email using token."""
+        from datetime import datetime
+        if (self.email_verification_token == token and
+            self.email_verification_expires and
+            self.email_verification_expires > datetime.utcnow()):
+            self.email_verified = True
+            self.email_verification_token = None
+            self.email_verification_expires = None
+            return True
+        return False
+
+    def set_password_reset_token(self, token: str, expires_in_hours: int = 1):
+        """Set password reset token with expiry."""
+        from datetime import datetime, timedelta
+        self.password_reset_token = token
+        self.password_reset_expires = datetime.utcnow() + timedelta(hours=expires_in_hours)
+
+    def verify_password_reset_token(self, token: str) -> bool:
+        """Verify password reset token."""
+        from datetime import datetime
+        return (self.password_reset_token == token and
+                self.password_reset_expires and
+                self.password_reset_expires > datetime.utcnow())
+
+    def clear_password_reset_token(self):
+        """Clear password reset token after successful reset."""
+        self.password_reset_token = None
+        self.password_reset_expires = None
 
     def __repr__(self):
         return f'<User {self.username}>'

@@ -3,7 +3,7 @@
 from flask import Blueprint, request, jsonify, current_app, send_from_directory
 from flask_jwt_extended import jwt_required, decode_token
 from flask_socketio import join_room, leave_room, emit
-from ..models import Task, ModelRun, User
+from ..models_pkg import Task, ModelRun, User
 # Use specific schemas
 from ..schemas import model_run_schema, ModelRunSchema
 from ..services.auth_helpers import get_user_from_token

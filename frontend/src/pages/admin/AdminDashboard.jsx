@@ -222,8 +222,8 @@ const AdminDashboard = () => {
                 </Pie>
                 <Tooltip />
               </PieChart>
-            )}
           </ResponsiveContainer>
+          )}
         </div>
 
         {/* Model Run Status Distribution */}
@@ -241,8 +241,8 @@ const AdminDashboard = () => {
                 <Tooltip />
                 <Bar dataKey="count" fill="#3b82f6" />
               </BarChart>
-            )}
           </ResponsiveContainer>
+          )}
         </div>
 
         {/* System Metrics Timeline */}
@@ -262,8 +262,8 @@ const AdminDashboard = () => {
                 <Legend />
                 <Line type="monotone" dataKey="value" stroke="#3b82f6" />
               </LineChart>
-            )}
           </ResponsiveContainer>
+          )}
         </div>
       </div>
 

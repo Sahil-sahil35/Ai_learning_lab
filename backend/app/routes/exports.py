@@ -24,9 +24,9 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Tabl
 from reportlab.lib import colors
 
 from .. import db
-from ..models import User, ModelRun, Task
-from ..models.enhanced import ExportJob, ExportStatus
-from ..services.report_generator import ReportGenerator
+from ..models_pkg import User, ModelRun, Task
+from ..models_pkg.enhanced import ExportJob, ExportStatus
+from services.report_generator import ReportGenerator
 from ..middleware.security import security_monitor
 from ..middleware.rate_limiter import rate_limit
 

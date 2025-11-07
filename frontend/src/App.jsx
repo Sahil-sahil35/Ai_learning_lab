@@ -1,7 +1,7 @@
 // frontend/src/App.jsx
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthStore } from './lib/auth';
+import useAuthStore from './lib/auth';
 
 // --- Layouts ---
 import Layout from './components/Layout';
@@ -218,7 +218,7 @@ function App() {
                     </Routes>
                 </Suspense>
             </div>
-        </Router>
+        // </Router>
     );
 }
 

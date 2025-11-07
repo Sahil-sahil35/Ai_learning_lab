@@ -1,5 +1,5 @@
 from . import ma
-from .models import User, Task, ModelRun
+from .models_pkg import User, Task, ModelRun
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:

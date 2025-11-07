@@ -2,7 +2,7 @@
 
 from celery_worker import celery
 from app import db
-from app.models import ModelRun
+from app.models_pkg import ModelRun
 import datetime
 from flask_socketio import SocketIO
 import subprocess # Added

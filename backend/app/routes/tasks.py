@@ -1,7 +1,7 @@
 # backend/app/routes/tasks.py
 from flask import Blueprint, request, jsonify, current_app # Added current_app
 from flask_jwt_extended import jwt_required
-from ..models import Task, User, ModelRun # Added ModelRun
+from ..models_pkg import Task, User, ModelRun # Added ModelRun
 from ..schemas import task_schema, tasks_schema
 from ..services.auth_helpers import get_user_from_token
 from .. import db

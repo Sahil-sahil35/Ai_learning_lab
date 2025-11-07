@@ -4,11 +4,62 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ML LearnLab</title>
-    <style type="stylesheet" src="./src/index.css"></style>
+    <meta name="description" content="AI Learning Lab - Interactive platform for teaching AI/ML concepts to students" />
+    <meta name="keywords" content="AI, Machine Learning, Education, Students, Visualization, Training" />
+    <meta name="author" content="AI Learning Lab Team" />
+
+    <!-- SEO and Meta Tags -->
+    <meta property="og:title" content="AI Learning Lab Platform" />
+    <meta property="og:description" content="Interactive educational platform for learning AI and machine learning concepts" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="./og-image.png" />
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' ws: wss:;" />
+
+    <title>AI Learning Lab - Interactive ML Education Platform</title>
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="./src/main.jsx" as="script" />
+
+    <!-- Styles will be handled by Vite build system -->
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Loading indicator for better UX -->
+      <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: system-ui, -apple-system, sans-serif;">
+        <div>
+          <h1>Loading AI Learning Lab...</h1>
+          <p>Please wait while we prepare your learning environment.</p>
+        </div>
+      </div>
+    </div>
     <script type="module" src="./src/main.jsx"></script>
+
+    <!-- Error handling for failed script loading -->
+    <script>
+      window.addEventListener('error', function(e) {
+        if (e.target.tagName === 'SCRIPT') {
+          document.getElementById('root').innerHTML = `
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: system-ui, -apple-system, sans-serif; text-align: center; padding: 20px;">
+              <div>
+                <h1>Application Failed to Load</h1>
+                <p>There was an error loading the AI Learning Lab platform.</p>
+                <p>Please refresh the page or contact support if the problem persists.</p>
+                <button onclick="window.location.reload()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                  Refresh Page
+                </button>
+              </div>
+            </div>
+          `;
+        }
+      }, true);
+    </script>
   </body>
 </html>

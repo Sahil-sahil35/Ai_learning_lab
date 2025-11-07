@@ -5,6 +5,8 @@ gunicorn
 python-dotenv
 flask-socketio
 eventlet  # WebSocket server for Gunicorn
+flask-limiter  # Rate limiting for security
+
 
 # Celery & Redis
 celery
@@ -36,3 +38,13 @@ xgboost
 matplotlib
 seaborn
 plotly
+# Email Service
+jinja2  # Email templates
+email-validator  # Email validation
+# Logging
+python-json-logger  # Structured JSON logging
+# Monitoring
+psutil  # System resource monitoring
+python-magic
+docker
+reportlab
