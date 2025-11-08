@@ -41,7 +41,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # JWT Configuration
-    JWT_ACCESS_TOKEN_EXPIRES = os.environ.get('JWT_ACCESS_TOKEN_EXPIRES', 28800)  # 8 hours default
+    JWT_ACCESS_TOKEN_EXPIRES = int(os.environ.get('JWT_ACCESS_TOKEN_EXPIRES', 28800))  # 8 hours default
 
     # Celery Configuration
     CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL') or 'redis://broker:6379/0'

@@ -22,7 +22,7 @@ const UploadData = () => {
   // Fetch model config
   useEffect(() => {
     setIsFetchingConfig(true);
-    api.get('/api/models')
+    api.get('/models')
       .then(res => {
         const foundModel = res.data.find(m => m.id === modelId);
         if (foundModel) {

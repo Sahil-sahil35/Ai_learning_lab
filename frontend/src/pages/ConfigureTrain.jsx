@@ -111,7 +111,7 @@ const ConfigureTrain = () => {
             const modelId = runRes.data.model_id_str;
 
             // Fetch the parameter definitions for this model
-            const modelsRes = await api.get('/api/models');
+            const modelsRes = await api.get('/models');
             const foundModel = modelsRes.data.find(m => m.id === modelId);
 
             if (!foundModel) throw new Error(`Model config not found for ID: ${modelId}`);

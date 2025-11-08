@@ -80,7 +80,7 @@ services:
       - "5432:5432" # Expose for local debugging
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U admin -d ml_learnlab"]
       interval: 10s
       timeout: 5s
       retries: 5
