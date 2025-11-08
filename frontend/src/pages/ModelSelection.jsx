@@ -80,7 +80,7 @@ const ModelSelection = () => {
     const fetchModels = async () => {
       try {
         setIsLoading(true);
-        const response = await api.get('/api/models');
+        const response = await api.get('/models');
         setModels(response.data);
         setError(null);
       } catch (err) {
