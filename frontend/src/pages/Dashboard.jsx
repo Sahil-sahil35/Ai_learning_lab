@@ -18,7 +18,7 @@ const Dashboard = () => {
     const fetchTasks = async () => {
       try {
         setIsLoading(true);
-        const response = await api.get('/api/tasks');
+        const response = await api.get('/tasks');
 
         // Validate response data structure
         if (!response.data) {

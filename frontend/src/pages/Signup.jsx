@@ -30,12 +30,17 @@ const Signup = () => {
 
     try {
       const response = await api.post('/auth/signup', { username, email, password });
-      const { access_token } = response.data;
+      // const { access_token } = response.data;
+       toast.success('Account created successfully! Please log in.');
 
-      loginAction(access_token); // Use renamed variable
-      toast.success('Account created! Redirecting...');
+      // loginAction(access_token); // Use renamed variable
+      // toast.success('Account created! Redirecting...');
 
-      navigate('/dashboard');
+      // navigate('/dashboard');
+      // Redirect to login page after successful signup
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
 
     } catch (error) {
       const errorMsg = error.response?.data?.msg || 'Sign up failed. Please try again.';

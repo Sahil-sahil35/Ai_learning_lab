@@ -20,7 +20,7 @@ const NewTask = () => {
     setIsLoading(true);
 
     try {
-      const response = await api.post('/api/tasks', { name, description });
+      const response = await api.post('/tasks', { name, description });
       const newTask = response.data;
 
       toast.success('Task created successfully!');

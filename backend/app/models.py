@@ -18,7 +18,7 @@ class User(db.Model):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
     # Email verification fields
-    email_verified = db.Column(db.Boolean, default=False, nullable=False)
+    email_verified = db.Column(db.Boolean, default=True, nullable=False)
     email_verification_token = db.Column(db.String(255), nullable=True)
     email_verification_expires = db.Column(db.DateTime, nullable=True)
 
