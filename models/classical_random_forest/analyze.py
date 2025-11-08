@@ -13,16 +13,30 @@ import sys
 import argparse
 from scipy import stats # For skewness/kurtosis
 
+# --- Custom JSON Encoder for Numpy Types ---
+class NumpyEncoder(json.JSONEncoder):
+    """ Special json encoder for numpy types """
+    def default(self, obj):
+        if isinstance(obj, (np.int_, np.intc, np.intp, np.int8,
+                            np.int16, np.int32, np.int64, np.uint8,
+                            np.uint16, np.uint32, np.uint64)):
+            return int(obj)
+        elif isinstance(obj, (np.float_, np.float16, np.float32,
+                               np.float64)):
+            return float(obj)
+        elif isinstance(obj, (np.ndarray,)):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
+
 # --- JSON Logging ---
 def log(message_type, payload):
     """Prints a structured JSON log to stdout."""
-    # Ensure standard fields for consistency
     log_entry = {
         "type": message_type,
-        "timestamp": pd.Timestamp.utcnow().isoformat() + "Z", # Add timestamp
+        "timestamp": pd.Timestamp.utcnow().isoformat() + "Z",
         **payload
     }
-    print(json.dumps(log_entry, default=str)) # Use default=str for numpy types
+    print(json.dumps(log_entry, cls=NumpyEncoder))
     sys.stdout.flush()
 
 # --- Analysis Function ---
@@ -159,13 +173,10 @@ def save_results(results_dict, output_dir):
     """Saves the full analysis results to a JSON file."""
     results_file_path = os.path.join(output_dir, 'analysis_results.json')
     try:
-        # Convert numpy types explicitly before saving if default=str is not enough
-        serializable_results = json.loads(json.dumps(results_dict, default=str))
         with open(results_file_path, 'w') as f:
-            json.dump(serializable_results, f, indent=2)
+            json.dump(results_dict, f, indent=2, cls=NumpyEncoder)
         log("log", {"message": f"Full analysis results saved to {results_file_path}"})
     except Exception as save_err:
-         # Log error but don't crash the main analysis if saving fails
          log("log", {"message": f"Error saving analysis results JSON: {save_err}", "log_type": "ERROR"})
 
 # --- Script Entrypoint ---

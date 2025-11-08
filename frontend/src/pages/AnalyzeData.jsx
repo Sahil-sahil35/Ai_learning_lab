@@ -27,40 +27,46 @@ const AnalyzeData = () => {
     const toastShownRef = useRef({ success: false, error: false });
     const isMountedRef = useRef(true); // Ref to track component mount status
 
-    // --- Fetch Initial Run Details ---
+    // --- Fetch Initial Run Details & Trigger Task ---
     useEffect(() => {
         isMountedRef.current = true;
         setIsFetchingDetails(true);
         setFetchError(null);
-        analysisTriggeredRef.current = false;
         toastShownRef.current = { success: false, error: false };
 
-        console.log("AnalyzeData: Fetching run details...");
         api.get(`/training/run/${runId}`)
             .then(res => {
                 if (!isMountedRef.current) return;
-                console.log("AnalyzeData: Run details fetched:", res.data);
                 const details = res.data;
                 setRunDetails(details);
                 const fetchedStatus = details.status || 'UNKNOWN';
 
-                // Pre-load existing results if present
-                if(details.analysis_results) {
-                    console.log("AnalyzeData: Pre-loading existing analysis results from run details.");
+                if (details.analysis_results) {
                     setAnalysisResults(details.analysis_results);
                 }
 
-                // If task is already finished, just show that status
-                if (['SUCCESS', 'FAILED', 'ANALYSIS_FAILED', 'CLEANING_SUCCESS', 'CLEANING_FAILED'].includes(fetchedStatus)) {
+                const isTerminal = ['SUCCESS', 'FAILED', 'ANALYSIS_FAILED', 'CLEANING_SUCCESS', 'CLEANING_FAILED'].includes(fetchedStatus);
+                const isRunning = ['ANALYZING', 'CLEANING', 'TRAINING'].includes(fetchedStatus);
+
+                if (isTerminal || isRunning) {
                     setRunStatus(fetchedStatus);
                 } else {
-                    // Otherwise, it needs triggering or monitoring
-                    setRunStatus('PENDING_TRIGGER'); // Set to a state that will trigger connection
+                    // Task needs to be triggered. Do it now to avoid race conditions.
+                    setRunStatus('STARTING'); // Give immediate feedback
+                    setLogs(prev => [...prev, { type: 'CLIENT', message: 'Requesting analysis task start...', timestamp: new Date().toISOString() }]);
+
+                    api.post(`/training/run/${runId}/analyze`)
+                        .catch(err => {
+                            if (!isMountedRef.current) return;
+                            const errorMsg = err.response?.data?.msg || 'Failed to start analysis task.';
+                            toast.error(errorMsg);
+                            setRunStatus('FAILED');
+                            setLogs(prev => [...prev, { type: 'ERROR', message: `API Error: ${errorMsg}`, timestamp: new Date().toISOString() }]);
+                        });
                 }
             })
             .catch(err => {
                 if (!isMountedRef.current) return;
-                console.error("AnalyzeData: Failed to fetch run details:", err);
                 const errorMsg = err.response?.data?.msg || "Could not load run details.";
                 setFetchError(errorMsg);
                 setRunStatus('FETCH_FAILED');
@@ -69,10 +75,9 @@ const AnalyzeData = () => {
                 if (isMountedRef.current) setIsFetchingDetails(false);
             });
 
-        // Main cleanup function for when the component fully unmounts
+        // Main cleanup for when the component fully unmounts
         return () => {
             isMountedRef.current = false;
-            console.log("AnalyzeData: Unmounting, leaving room and disconnecting socket.");
             leaveTrainingRoom(runId);
             disconnectSocket(); // Disconnect fully on unmount
         };
@@ -80,45 +85,19 @@ const AnalyzeData = () => {
 
     // --- WebSocket Connection and Event Handling ---
     useEffect(() => {
-        // Only proceed if details loaded successfully AND task needs running/monitoring
-        const shouldConnect = !isFetchingDetails && !fetchError && runDetails && !['SUCCESS', 'FAILED', 'ANALYSIS_FAILED', 'CLEANING_SUCCESS', 'CLEANING_FAILED', 'FETCH_FAILED'].includes(runStatus);
+        // Connect to WebSocket if details are loaded and the task is in a non-terminal state.
+        const isTerminal = ['SUCCESS', 'FAILED', 'ANALYSIS_FAILED', 'CLEANING_SUCCESS', 'CLEANING_FAILED', 'FETCH_FAILED'].includes(runStatus);
+        const shouldConnect = !isFetchingDetails && !fetchError && !isTerminal;
 
         if (!shouldConnect) {
-             console.log(`AnalyzeData: Skipping socket connection. Status: ${runStatus}, Fetching: ${isFetchingDetails}, Error: ${fetchError}`);
-             return; // Don't connect or set up listeners
+            return;
         }
 
-        console.log("AnalyzeData: Connecting WebSocket...");
-        connectSocket(); // Connect explicitly
+        connectSocket();
 
         const handleConnect = () => {
             if (!isMountedRef.current) return;
-            console.log('AnalyzeData: Socket connected, joining room:', runId);
             joinTrainingRoom(runId);
-            
-             // Trigger analysis only ONCE after joining room if needed
-            if (runStatus === 'PENDING_TRIGGER' && !analysisTriggeredRef.current) {
-                analysisTriggeredRef.current = true;
-                console.log("AnalyzeData: Triggering analysis task via API...");
-                setLogs(prev => [...prev, { type: 'CLIENT', message: 'Requesting analysis task start...', timestamp: new Date().toISOString() }]);
-                setRunStatus('STARTING'); // Visual feedback that trigger was sent
-                api.post(`/training/run/${runId}/analyze`)
-                    .then(res => {
-                        if (!isMountedRef.current) return;
-                        console.log("AnalyzeData: Analysis task successfully triggered by API, Celery ID:", res.data?.celery_task_id);
-                        // Backend task will now update status to ANALYZING via WebSocket
-                    })
-                    .catch(err => {
-                        if (!isMountedRef.current) return;
-                        const errorMsg = err.response?.data?.msg || 'Failed to start analysis task via API.';
-                        console.error("AnalyzeData: API call to start analysis failed:", errorMsg);
-                        toast.error(errorMsg);
-                        setRunStatus('FAILED'); // Set failure status if API call fails
-                        setLogs(prev => [...prev, { type: 'ERROR', message: `API Error: ${errorMsg}`, timestamp: new Date().toISOString() }]);
-                    });
-            } else {
-                 console.log("AnalyzeData: Reconnected to socket, already monitoring or pending trigger.");
-            }
         };
 
         const handleLog = (log) => {
@@ -126,40 +105,31 @@ const AnalyzeData = () => {
             if (!log.timestamp) log.timestamp = new Date().toISOString();
             setLogs(prev => [...prev, log]);
 
-            // --- START FIX: Handle full analysis result object ---
-            // The backend sends the *entire* analysis_results object in one log
             if (log.type === 'analysis_result' && log.data) {
-                console.log("AnalyzeData: Processing received full analysis_result object.");
-                // **Replace** the entire analysisResults state with the new data object
                 setAnalysisResults(log.data);
             }
-            // --- END FIX ---
         };
 
         const handleStatusUpdate = (update) => {
-             if (!isMountedRef.current) return;
+            if (!isMountedRef.current) return;
             const newStatus = update.status;
-            console.log("AnalyzeData: Received status update:", newStatus);
-             setRunStatus(prevStatus => {
-                 const terminalStates = ['SUCCESS', 'FAILED', 'ANALYSIS_FAILED', 'CLEANING_SUCCESS', 'CLEANING_FAILED', 'FETCH_FAILED'];
-                 if (terminalStates.includes(prevStatus) && !terminalStates.includes(newStatus)) {
-                     console.warn(`AnalyzeData: Ignoring status update '${newStatus}' because current status is terminal ('${prevStatus}')`);
-                     return prevStatus;
-                 }
-                 return newStatus;
-             });
+            setRunStatus(prevStatus => {
+                if (['SUCCESS', 'FAILED', 'ANALYSIS_FAILED'].includes(prevStatus) && !['SUCCESS', 'FAILED', 'ANALYSIS_FAILED'].includes(newStatus)) {
+                    return prevStatus;
+                }
+                return newStatus;
+            });
         };
 
         const handleDisconnect = (reason) => {
             if (!isMountedRef.current) return;
-            console.log('AnalyzeData: Socket disconnected:', reason);
-             if (['PENDING_TRIGGER', 'STARTING', 'ANALYZING'].includes(runStatus)) {
-                setStatus('CONNECTING'); // Show reconnecting state
+            if (!['SUCCESS', 'FAILED'].includes(runStatus)) {
+                setRunStatus('CONNECTING'); // Show reconnecting state
             }
         };
+
         const handleError = (err) => {
             if (!isMountedRef.current) return;
-            console.error('AnalyzeData: Socket error:', err);
             toast.error(`Socket error: ${err.msg || 'Connection failed'}`);
         };
 
@@ -167,13 +137,11 @@ const AnalyzeData = () => {
         socket.on('connect', handleConnect);
         socket.on('disconnect', handleDisconnect);
         socket.on('error', handleError);
-        socket.on('training_log', handleLog); // Handles logs AND analysis_result
+        socket.on('training_log', handleLog);
         socket.on('status_update', handleStatusUpdate);
 
-        // --- START FIX [Issue #12] ---
-        // Cleanup listeners and LEAVE ROOM, but do not disconnect socket
+        // Cleanup listeners on effect cleanup
         return () => {
-            console.log("AnalyzeData: Cleaning up WebSocket listeners and leaving room.");
             if (socket.connected) {
                 leaveTrainingRoom(runId);
             }
@@ -182,10 +150,8 @@ const AnalyzeData = () => {
             socket.off('error', handleError);
             socket.off('training_log', handleLog);
             socket.off('status_update', handleStatusUpdate);
-            // DO NOT call disconnectSocket() here
         };
-        // --- END FIX ---
-    }, [runId, runDetails, isFetchingDetails, fetchError, runStatus]);
+    }, [runId, isFetchingDetails, fetchError, runStatus]);
 
 
     // --- (Keep toast and scroll effects as before) ---

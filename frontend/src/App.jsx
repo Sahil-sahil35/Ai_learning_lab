@@ -67,27 +67,14 @@ function PublicRoute({ children }) {
 
 function App() {
     const { initializeAuth, isLoading } = useAuthStore();
-    const [appInitialized, setAppInitialized] = useState(false);
 
     useEffect(() => {
         // Initialize authentication state on app startup
-        const initializeApp = async () => {
-            try {
-                // Small delay to ensure localStorage is ready
-                await new Promise(resolve => setTimeout(resolve, 100));
-                initializeAuth();
-            } catch (error) {
-                console.error('Failed to initialize app:', error);
-            } finally {
-                setAppInitialized(true);
-            }
-        };
-
-        initializeApp();
+        initializeAuth();
     }, [initializeAuth]);
 
-    // Show loading screen while app is initializing
-    if (!appInitialized) {
+    // Show loading screen while auth is initializing
+    if (isLoading) {
         return <LoadingScreen />;
     }
 

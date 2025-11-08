@@ -11,6 +11,7 @@ import StepIndicator from '../components/StepIndicator';
 import api from '../lib/api';
 import styles from './ConfigureTrain.module.css';
 import Spinner from '../components/Spinner';
+import FullScreenStatus from '../components/FullScreenStatus';
 
 // --- FormField Component (Keep as is) ---
 const FormField = ({ param, value, onChange, columnNames = [] }) => {
@@ -198,20 +199,9 @@ const ConfigureTrain = () => {
         }
     };
 
-    // Loading State
-    if (isFetching) {
-        return <div className={styles.loadingContainer}><Spinner size="large" /></div>;
-    }
-
-    // Error State
-    if (error) {
-        return (
-            <div className={styles.loadingContainer}> {/* Reuse loading style for error */}
-                <p className={styles.errorText}>{error}</p> {/* Add specific error style if needed */}
-                 {/* Optionally add a back button */}
-                 <button onClick={() => navigate(-1)} className={styles.backButton}>Go Back</button>
-            </div>
-        );
+    // Loading and Error States
+    if (isFetching || error) {
+        return <FullScreenStatus isLoading={isFetching} error={error} loadingMessage="Loading configuration..." backLink={`/run/${runId}/clean`} />;
     }
 
     // Main Content

@@ -25,10 +25,7 @@ services:
     build:
       context: ./backend
     env_file:
-      - .env
-    environment:
-      - FLASK_ENV=production
-      - DATABASE_URL=postgresql://admin:mysuperpass@db:5432/ml_learnlab
+      - .env.local
     volumes:
       - ./backend:/app
       - ./models:/app/models
@@ -48,9 +45,7 @@ services:
       context: ./backend
     command: celery -A celery_worker.celery worker --loglevel=info --concurrency=2
     env_file:
-      - .env
-    environment:
-      - FLASK_ENV=production
+      - .env.local
     volumes:
       - ./backend:/app
       - ./models:/app/models
