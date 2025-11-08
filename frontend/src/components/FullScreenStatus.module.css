@@ -1,0 +1,41 @@
+/* frontend/src/components/FullScreenStatus.module.css */
+.centeredState {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.centeredState p {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+}
+
+.errorState {
+    color: var(--color-danger);
+}
+
+.errorState p {
+    max-width: 500px;
+}
+
+.backLink {
+    margin-top: 1.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.backLink:hover {
+    background-color: var(--background-tertiary);
+}
+
+.backLink svg {
+    margin-right: 0.5rem;
+}

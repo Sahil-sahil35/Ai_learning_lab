@@ -5,32 +5,18 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { motion } from 'framer-motion';
 import styles from './StepIndicator.module.css';
 
-// --- START FIX [Issue #1] ---
 const steps = [
   "Select Model",
   "Upload Data",
-  "Analyze & Clean", // Combine Analyze and Clean visually
+  "Analyze",
+  "Clean",
   "Configure",
   "Train",
   "Results"
 ];
-// --- END FIX [Issue #1] ---
 
 const StepIndicator = ({ currentStep }) => {
-  // --- START FIX [Issue #1] ---
-  // Map incoming detailed steps to the combined visual step
-  const stepMap = {
-    "Select Model": "Select Model",
-    "Upload Data": "Upload Data",
-    "Analyze": "Analyze & Clean", // Map Analyze to combined step
-    "Clean": "Analyze & Clean",   // Map Clean to combined step
-    "Configure": "Configure",
-    "Train": "Train",
-    "Results": "Results"
-  };
-  const visualStep = stepMap[currentStep] || currentStep; // Use mapped step
-  const currentIndex = steps.indexOf(visualStep);
-  // --- END FIX [Issue #1] ---
+  const currentIndex = steps.indexOf(currentStep);
 
 
   return (

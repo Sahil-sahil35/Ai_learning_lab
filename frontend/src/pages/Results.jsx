@@ -10,6 +10,7 @@ import StepIndicator from '../components/StepIndicator';
 import MetricCard from '../components/charts/MetricCard';
 import api from '../lib/api';
 import Spinner from '../components/Spinner';
+import FullScreenStatus from '../components/FullScreenStatus';
 import styles from './Results.module.css';
 
 // --- Helpers (Keep as before) ---
@@ -108,26 +109,9 @@ const Results = () => {
   // --- END FIX ---
 
 
-  // --- Loading State (Keep as is) ---
-  if (isLoading) {
-    return (
-      <div className={styles.centeredState}>
-        <Spinner size="large" /> <p>Loading results...</p>
-      </div>
-    );
-  }
-
-  // --- Critical Error State (Keep as is) ---
-   if (error && !runDetails && !resultsData) { // Only show critical error if NOTHING loaded
-    return (
-      <div className={`${styles.centeredState} ${styles.errorState}`}>
-        <FontAwesomeIcon icon={faExclamationCircle} size="3x" />
-        <p>{error}</p>
-        <Link to="/dashboard" className={styles.backLink}>
-          <FontAwesomeIcon icon={faArrowLeft} /> Back to Dashboard
-        </Link>
-      </div>
-    );
+  // --- Loading and Error States ---
+  if (isLoading || (error && !runDetails && !resultsData)) {
+    return <FullScreenStatus isLoading={isLoading} error={error} loadingMessage="Loading results..." />;
   }
 
   // --- Handle case where run exists but no results (e.g., failed run) ---

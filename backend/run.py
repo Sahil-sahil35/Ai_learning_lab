@@ -7,6 +7,11 @@ import os
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
+# Initialize database
+from app.database import init_db
+with app.app_context():
+    init_db()
+
 if __name__ == '__main__':
     print("Starting Flask-SocketIO server with eventlet...")
     socketio.run(app, host='0.0.0.0', port=5000)

@@ -35,24 +35,17 @@ def signup():
             password=data['password']
         )
 
-        # Generate email verification token
-        verification_token = secrets.token_urlsafe(32)
-        new_user.set_email_verification_token(verification_token)
+        # For local development, bypass email verification
+        new_user.email_verified = True
 
         db.session.add(new_user)
         db.session.commit()
 
-        # Send verification email
-        email_sent = email_service.send_verification_email(
-            new_user.email,
-            new_user.username,
-            verification_token
-        )
-
+        # Don't send verification email in local dev
         # Note: Don't create access token until email is verified
         return jsonify({
-            "msg": "User created successfully. Please check your email to verify your account.",
-            "email_sent": email_sent,
+            "msg": "User created successfully. Email verification bypassed for local development.",
+            "email_sent": False,
             "user": user_schema.dump(new_user)
         }), 201
 
@@ -73,14 +66,6 @@ def login():
     user = User.query.filter_by(email=data['email']).first()
 
     if user and user.check_password(data['password']):
-        # Check if email is verified
-        if not user.email_verified:
-            return jsonify({
-                "msg": "Please verify your email address before logging in",
-                "email_verified": False,
-                "email": user.email
-            }), 403
-
         # Update last login
         user.last_login = datetime.utcnow()
         db.session.commit()

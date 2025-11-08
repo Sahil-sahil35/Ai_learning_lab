@@ -1,58 +1,45 @@
 import { io } from 'socket.io-client';
 
-// Enhanced socket functionality with better error handling
+let socket;
 
-// Get the base URL (origin) - VITE_WS_URL is now just "/" or empty
-const WS_URL = '/'; // Connect relative to the current origin
+const WS_URL = '/';
 
-const socket = io(WS_URL, {
-    // Explicitly specify transports, starting with websocket
-    transports: ['websocket', 'polling'],
-    path: '/socket.io', // Nginx routes this path
-    autoConnect: false,
-    withCredentials: true,
-    reconnection: true,
-    reconnectionAttempts: 5,
-    reconnectionDelay: 1000,
-    reconnectionDelayMax: 5000,
-    timeout: 20000,
-});
+const getSocket = () => {
+    if (!socket) {
+        socket = io(WS_URL, {
+            transports: ['websocket', 'polling'],
+            path: '/socket.io',
+            autoConnect: false,
+            withCredentials: true,
+            reconnection: true,
+            reconnectionAttempts: 5,
+            reconnectionDelay: 1000,
+            reconnectionDelayMax: 5000,
+            timeout: 20000,
+        });
 
-/**
- * Connects to the WebSocket server.
- */
-export const connectSocket = () => {
-    if (socket.connected) {
-        return Promise.resolve(socket);
+        // Add logging for socket events
+        socket.on('connect', () => console.log('Socket connected:', socket.id));
+        socket.on('disconnect', (reason) => console.log('Socket disconnected:', reason));
+        socket.on('connect_error', (err) => console.error('Socket connection error:', err.message));
     }
+    return socket;
+};
 
-    return new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => {
-            reject(new Error('Socket connection timeout'));
-        }, 10000);
-
-        socket.on('connect', () => {
-            clearTimeout(timeout);
-            console.log('Socket connected successfully:', socket.id);
-            resolve(socket);
-        });
-
-        socket.on('connect_error', (err) => {
-            clearTimeout(timeout);
-            reject(new Error(`Socket connection failed: ${err.message}`));
-        });
-
-        console.log(`Attempting socket connection to origin with path /socket.io`);
-        socket.connect();
-    });
+export const connectSocket = () => {
+    const s = getSocket();
+    if (!s.connected) {
+        s.connect();
+    }
 };
 
 /**
  * Disconnects from the WebSocket server.
  */
 export const disconnectSocket = () => {
-    if (socket.connected) {
-        socket.disconnect();
+    const s = getSocket();
+    if (s.connected) {
+        s.disconnect();
     }
 };
 
@@ -60,51 +47,22 @@ export const disconnectSocket = () => {
  * Enhanced room joining with error handling and Promise support
  */
 export const joinTrainingRoom = (modelRunId) => {
+    const s = getSocket();
     return new Promise((resolve, reject) => {
         const token = localStorage.getItem('access_token');
         if (!token) {
-            reject(new Error("No auth token found, cannot join room."));
-            return;
+            return reject(new Error("No auth token found, cannot join room."));
         }
 
-        console.log(`Attempting to join room: ${modelRunId}`);
-
-        // Set up one-time listener for join confirmation
-        const onRoomJoined = (data) => {
-            if (data.model_run_id === modelRunId || data.room === modelRunId) {
-                socket.off('room_joined', onRoomJoined);
-                socket.off('room_error', onRoomError);
+        s.emit('join_room', { token: token, model_run_id: modelRunId }, (ack) => {
+            if (ack.success) {
                 console.log(`Successfully joined room: ${modelRunId}`);
-                resolve(data);
+                resolve(ack);
+            } else {
+                console.error(`Failed to join room: ${ack.error}`);
+                reject(new Error(ack.error || 'Failed to join room'));
             }
-        };
-
-        const onRoomError = (error) => {
-            if (error.model_run_id === modelRunId || error.room === modelRunId) {
-                socket.off('room_joined', onRoomJoined);
-                socket.off('room_error', onRoomError);
-                reject(new Error(error.message || 'Failed to join room'));
-            }
-        };
-
-        socket.on('room_joined', onRoomJoined);
-        socket.on('room_error', onRoomError);
-
-        // Set timeout for room joining
-        const timeout = setTimeout(() => {
-            socket.off('room_joined', onRoomJoined);
-            socket.off('room_error', onRoomError);
-            reject(new Error('Room joining timeout after 10 seconds'));
-        }, 10000);
-
-        // Join the room
-        socket.emit('join_room', {
-            token: token,
-            model_run_id: modelRunId,
         });
-
-        // Handle case where room is joined immediately
-        socket.on('room_joined', () => clearTimeout(timeout));
     });
 };
 
@@ -112,32 +70,14 @@ export const joinTrainingRoom = (modelRunId) => {
  * Leaves a specific room.
  */
 export const leaveTrainingRoom = (modelRunId) => {
-    console.log(`Leaving room: ${modelRunId}`);
-    socket.emit('leave_room', { model_run_id: modelRunId });
+    const s = getSocket();
+    if (s.connected) {
+        s.emit('leave_room', { model_run_id: modelRunId });
+    }
 };
 
-// Add listeners for debugging connection
-socket.on('disconnect', (reason) => {
-    console.log('Socket disconnected:', reason);
-    // Handle reconnection logic
-    if (reason === 'io server disconnect') {
-        // Server disconnected, don't reconnect automatically
-        socket.connect();
-    }
-});
-
-socket.on('connect_error', (err) => {
-    console.error('Socket connection error:', err.message, err.cause);
-    // Handle specific error cases
-    if (err.message.includes('Authentication error')) {
-        console.warn('Socket authentication failed, clearing token');
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('user');
-    }
-});
-
 // Socket connection status helpers
-export const isSocketConnected = () => socket.connected;
-export const getSocketId = () => socket.id;
+export const isSocketConnected = () => getSocket().connected;
+export const getSocketId = () => getSocket().id;
 
-export default socket;
+export default getSocket();

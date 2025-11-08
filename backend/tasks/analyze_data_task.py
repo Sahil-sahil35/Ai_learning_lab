@@ -129,6 +129,13 @@ def analyze_data_task(self, model_run_id):
         error_message = f"Analysis task failed: {str(e)}"
         self.report_log(model_run_id, error_message, "ERROR")
 
+        # Send a structured error message to the frontend
+        self.report_json_log(model_run_id, {
+            'type': 'error',
+            'source': 'analysis_task',
+            'message': error_message
+        })
+
         try:
              self.update_status(model_run_id, "ANALYSIS_FAILED")
         except Exception as status_err:
