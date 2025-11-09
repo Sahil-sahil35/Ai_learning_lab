@@ -13,16 +13,14 @@ import argparse
 from collections import defaultdict
 import datetime # Use datetime for timestamps
 
-# --- JSON Logging ---
+# --- Plain Text Logging ---
 def log(message_type, payload):
-    """Prints a structured JSON log to stdout."""
-    log_entry = {
-        "type": message_type,
-        "timestamp": datetime.datetime.utcnow().isoformat() + "Z", # ISO 8601 format
-        **payload
-    }
-    # Use default=str for potentially non-serializable types if any occur
-    print(json.dumps(log_entry, default=str))
+    """Prints a plain text log to stdout."""
+    message = payload.get('message', '')
+    if isinstance(message, dict):
+        message = json.dumps(message)
+
+    print(f"[{message_type.upper()}] {message}")
     sys.stdout.flush()
 
 # --- Analysis Function ---

@@ -28,15 +28,14 @@ class NumpyEncoder(json.JSONEncoder):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
 
-# --- JSON Logging ---
+# --- Plain Text Logging ---
 def log(message_type, payload):
-    """Prints a structured JSON log to stdout."""
-    log_entry = {
-        "type": message_type,
-        "timestamp": pd.Timestamp.utcnow().isoformat() + "Z",
-        **payload
-    }
-    print(json.dumps(log_entry, cls=NumpyEncoder))
+    """Prints a plain text log to stdout."""
+    message = payload.get('message', '')
+    if isinstance(message, dict):
+        message = json.dumps(message)
+
+    print(f"[{message_type.upper()}] {message}")
     sys.stdout.flush()
 
 # --- Analysis Function ---
