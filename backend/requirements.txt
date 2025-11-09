@@ -28,6 +28,7 @@ numpy
 
 # Core ML Libraries
 scikit-learn
+scipy
 torch
 torchvision
 torchaudio
